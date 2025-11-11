@@ -1,0 +1,1000 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora Autónomo España</title>
+    <style>
+        :root {
+            --bg-primary: #f8f9fa;
+            --bg-secondary: white;
+            --bg-tertiary: #f8fafc;
+            --text-primary: #1e293b;
+            --text-secondary: #64748b;
+            --text-tertiary: #334155;
+            --border-color: #e2e8f0;
+            --border-color-hover: #cbd5e1;
+            --header-gradient-start: #1e293b;
+            --header-gradient-end: #334155;
+            --card-shadow: rgba(0,0,0,0.05);
+            --card-shadow-hover: rgba(0,0,0,0.08);
+            --info-bg: #eff6ff;
+            --info-border: #3b82f6;
+            --info-text: #1e40af;
+            --note-bg: #fefce8;
+            --note-border: #eab308;
+            --note-text: #854d0e;
+            --input-bg: white;
+            --accent-color: #3b82f6;
+        }
+
+        [data-theme="dark"] {
+            --bg-primary: #0f172a;
+            --bg-secondary: #1e293b;
+            --bg-tertiary: #1e293b;
+            --text-primary: #f1f5f9;
+            --text-secondary: #94a3b8;
+            --text-tertiary: #cbd5e1;
+            --border-color: #334155;
+            --border-color-hover: #475569;
+            --header-gradient-start: #0f172a;
+            --header-gradient-end: #1e293b;
+            --card-shadow: rgba(0,0,0,0.3);
+            --card-shadow-hover: rgba(0,0,0,0.5);
+            --info-bg: #1e3a5f;
+            --info-border: #3b82f6;
+            --info-text: #60a5fa;
+            --note-bg: #422006;
+            --note-border: #eab308;
+            --note-text: #fbbf24;
+            --input-bg: #1e293b;
+            --accent-color: #60a5fa;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: var(--bg-primary);
+            min-height: 100vh;
+            padding: 20px;
+            color: var(--text-primary);
+            transition: background 0.3s ease, color 0.3s ease;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: var(--bg-secondary);
+            border-radius: 16px;
+            box-shadow: 0 1px 3px var(--card-shadow);
+            overflow: hidden;
+            transition: background 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .header {
+            background: linear-gradient(135deg, var(--header-gradient-start) 0%, var(--header-gradient-end) 100%);
+            color: white;
+            padding: 40px 30px;
+            position: relative;
+        }
+
+        .header h1 {
+            font-size: 2em;
+            margin-bottom: 8px;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+        }
+
+        .header p {
+            opacity: 0.9;
+            font-size: 1em;
+            font-weight: 400;
+        }
+
+        .header-buttons {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        #langToggle {
+            background: rgba(255,255,255,0.9);
+            border: none;
+            color: #1e293b;
+            padding: 8px 18px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.85em;
+            transition: all 0.2s;
+            font-family: inherit;
+        }
+
+        #langToggle:hover {
+            background: white;
+            transform: translateY(-1px);
+        }
+
+        #themeToggle {
+            background: transparent;
+            border: none;
+            color: rgba(255,255,255,0.8);
+            padding: 8px;
+            cursor: pointer;
+            font-size: 1.3em;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #themeToggle:hover {
+            color: white;
+            transform: scale(1.1);
+        }
+
+        .content {
+            padding: 40px 30px;
+        }
+
+        .input-section {
+            background: var(--bg-tertiary);
+            padding: 30px;
+            border-radius: 12px;
+            margin-bottom: 32px;
+            border: 1px solid var(--border-color);
+            transition: background 0.3s ease, border-color 0.3s ease;
+        }
+
+        .input-group {
+            margin-bottom: 24px;
+        }
+
+        .input-group:last-child {
+            margin-bottom: 0;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--text-tertiary);
+            font-size: 0.95em;
+        }
+
+        .input-wrapper {
+            position: relative;
+        }
+
+        .input-wrapper input {
+            width: 100%;
+            padding: 14px 50px 14px 16px;
+            border: 2px solid var(--border-color);
+            border-radius: 10px;
+            font-size: 1.1em;
+            transition: all 0.2s;
+            background: var(--input-bg);
+            color: var(--text-primary);
+        }
+
+        .input-wrapper input:focus {
+            outline: none;
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        .input-wrapper .currency {
+            position: absolute;
+            right: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-secondary);
+            font-weight: 600;
+            font-size: 0.95em;
+        }
+
+        .info-box {
+            background: var(--info-bg);
+            border-left: 4px solid var(--info-border);
+            padding: 16px;
+            border-radius: 8px;
+            margin-bottom: 24px;
+            font-size: 0.9em;
+            line-height: 1.6;
+            color: var(--text-primary);
+            transition: background 0.3s ease;
+        }
+
+        .info-box strong {
+            color: var(--info-text);
+        }
+
+        .results-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 20px;
+            margin-bottom: 32px;
+        }
+
+        .result-card {
+            background: var(--bg-tertiary);
+            padding: 24px;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            transition: all 0.2s;
+        }
+
+        .result-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px var(--card-shadow-hover);
+        }
+
+        .result-card.primary {
+            background: linear-gradient(135deg, var(--header-gradient-start) 0%, var(--header-gradient-end) 100%);
+            color: white;
+            border: none;
+        }
+
+        .result-card h3 {
+            font-size: 0.8em;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 12px;
+            opacity: 0.7;
+            font-weight: 600;
+        }
+
+        .result-card.primary h3 {
+            opacity: 0.85;
+        }
+
+        .result-card .value {
+            font-size: 2em;
+            font-weight: 700;
+            margin-bottom: 6px;
+            letter-spacing: -0.02em;
+        }
+
+        .result-card .subtitle {
+            font-size: 0.85em;
+            opacity: 0.6;
+            font-weight: 500;
+        }
+
+        .breakdown {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 28px;
+            margin-bottom: 32px;
+            transition: background 0.3s ease, border-color 0.3s ease;
+        }
+
+        .breakdown h2 {
+            color: var(--text-primary);
+            margin-bottom: 24px;
+            font-size: 1.3em;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+        }
+
+        .breakdown-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 16px 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .breakdown-item:last-child {
+            border-bottom: none;
+        }
+
+        .breakdown-item .label {
+            font-weight: 500;
+            color: var(--text-secondary);
+        }
+
+        .breakdown-item .value {
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .breakdown-item.total {
+            border-top: 2px solid var(--border-color);
+            margin-top: 12px;
+            padding-top: 20px;
+            font-size: 1.05em;
+        }
+
+        .breakdown-item.total .label,
+        .breakdown-item.total .value {
+            color: var(--text-primary);
+            font-weight: 700;
+        }
+
+        .tax-rates {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-top: 24px;
+        }
+
+        .rate-box {
+            background: var(--bg-tertiary);
+            padding: 18px;
+            border-radius: 10px;
+            text-align: center;
+            border: 1px solid var(--border-color);
+            transition: background 0.3s ease, border-color 0.3s ease;
+        }
+
+        .rate-box .label {
+            font-size: 0.85em;
+            color: var(--text-secondary);
+            margin-bottom: 10px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .rate-box .value {
+            font-size: 1.8em;
+            font-weight: 700;
+            color: var(--text-primary);
+            letter-spacing: -0.02em;
+        }
+
+        .note {
+            background: var(--note-bg);
+            border-left: 4px solid var(--note-border);
+            padding: 18px;
+            border-radius: 8px;
+            margin-top: 24px;
+            font-size: 0.9em;
+            line-height: 1.6;
+            color: var(--text-primary);
+            transition: background 0.3s ease;
+        }
+
+        .note strong {
+            color: var(--note-text);
+        }
+
+        @media (max-width: 600px) {
+            body {
+                padding: 10px;
+            }
+
+            .container {
+                border-radius: 12px;
+            }
+
+            .header {
+                padding: 25px 15px;
+            }
+
+            .header h1 {
+                font-size: 1.3em;
+                line-height: 1.3;
+                padding-right: 0;
+                max-width: calc(100% - 110px);
+            }
+
+            .header p {
+                font-size: 0.85em;
+                margin-top: 6px;
+                padding-right: 0;
+                max-width: calc(100% - 110px);
+            }
+
+            .header-buttons {
+                top: 15px;
+                right: 12px;
+                gap: 8px;
+            }
+
+            #langToggle {
+                font-size: 0.75em;
+                padding: 6px 14px;
+            }
+
+            #themeToggle {
+                font-size: 1.1em;
+                padding: 6px;
+            }
+
+            .content {
+                padding: 20px 15px;
+            }
+
+            .input-section {
+                padding: 18px 15px;
+            }
+
+            .results-grid {
+                grid-template-columns: 1fr;
+                gap: 16px;
+            }
+            
+            .tax-rates {
+                grid-template-columns: 1fr;
+            }
+
+            .result-card {
+                padding: 18px;
+            }
+
+            .breakdown {
+                padding: 18px;
+            }
+
+            .breakdown h2 {
+                font-size: 1.1em;
+            }
+
+            .breakdown-item {
+                padding: 12px 0;
+                font-size: 0.9em;
+            }
+
+            .rate-box .value {
+                font-size: 1.5em;
+            }
+
+            .note {
+                padding: 14px;
+                font-size: 0.85em;
+            }
+        }
+
+        @media (max-width: 400px) {
+            .header {
+                padding: 20px 12px;
+            }
+
+            .header h1 {
+                font-size: 1.15em;
+                max-width: calc(100% - 100px);
+            }
+
+            .header p {
+                font-size: 0.8em;
+                max-width: calc(100% - 100px);
+            }
+
+            .header-buttons {
+                top: 12px;
+                right: 10px;
+                gap: 6px;
+            }
+
+            #langToggle {
+                font-size: 0.7em;
+                padding: 5px 12px;
+            }
+
+            #themeToggle {
+                font-size: 1em;
+                padding: 5px;
+            }
+
+            .content {
+                padding: 18px 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="header-buttons">
+                <button id="langToggle">EN</button>
+                <button id="themeToggle">☾</button>
+            </div>
+            <h1 data-lang="title">Calculadora Autónomo</h1>
+            <p data-lang="subtitle">Calcula cuánto necesitas facturar según tu neto deseado</p>
+        </div>
+
+        <div class="content">
+            <div class="input-section">
+                <div class="input-group">
+                    <label for="netPay" data-lang="inputLabel">¿Cuánto quieres cobrar neto al mes?</label>
+                    <div class="input-wrapper">
+                        <input type="number" id="netPay" placeholder="2000" min="0" step="100">
+                        <span class="currency">€/mes</span>
+                    </div>
+                </div>
+
+                <div class="info-box">
+                    <strong data-lang="infoTitle">💡 ¿Cómo funciona?</strong> <span data-lang="infoText">Introduces el neto que quieres cobrar mensualmente y la calculadora te muestra cuánto debe enviarte la empresa cada mes para cubrir Seguridad Social e IRPF. Así puedes negociar con HR el importe exacto.</span>
+                </div>
+
+                <div class="input-group">
+                    <label style="font-weight: 600; color: var(--text-tertiary); margin-bottom: 15px; display: block;" data-lang="benefitsLabel">Beneficios Disponibles:</label>
+                    
+                    <div style="background: var(--bg-secondary); border: 2px solid var(--border-color); border-radius: 12px; padding: 18px; margin-bottom: 15px; transition: all 0.2s;" onmouseover="this.style.borderColor='var(--border-color-hover)'" onmouseout="this.style.borderColor='var(--border-color)'">
+                        <label style="display: flex; align-items: start; cursor: pointer;">
+                            <input type="checkbox" id="tarifaPlana" style="margin-right: 12px; margin-top: 4px; width: 18px; height: 18px; cursor: pointer; accent-color: var(--accent-color);">
+                            <div>
+                                <strong style="color: var(--text-primary); font-weight: 600;" data-lang="tarifaPlanaTitle">Tarifa Plana (Nacional)</strong>
+                                <div style="font-size: 0.9em; color: var(--text-secondary); margin-top: 6px; line-height: 1.5;" data-lang="tarifaPlanaDesc">
+                                    Solo €87/mes de SS durante 12 meses (o 24 si ingresos < SMI). Aplica si eres nuevo autónomo.
+                                </div>
+                            </div>
+                        </label>
+                    </div>
+
+                    <div style="background: var(--bg-secondary); border: 2px solid var(--border-color); border-radius: 12px; padding: 18px; transition: all 0.2s;" onmouseover="this.style.borderColor='var(--border-color-hover)'" onmouseout="this.style.borderColor='var(--border-color)'">
+                        <label style="display: flex; align-items: start; cursor: pointer;">
+                            <input type="checkbox" id="cuotaCero" style="margin-right: 12px; margin-top: 4px; width: 18px; height: 18px; cursor: pointer; accent-color: var(--accent-color);">
+                            <div>
+                                <strong style="color: var(--text-primary); font-weight: 600;" data-lang="cuotaCeroTitle">Cuota Cero Andalucía 🎉</strong>
+                                <div style="font-size: 0.9em; color: var(--text-secondary); margin-top: 6px; line-height: 1.5;" data-lang="cuotaCeroDesc">
+                                    ¡La Junta te reembolsa el 100% de la SS! Pagas €87/mes y te lo devuelven. Válido hasta sept 2026.
+                                </div>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <div id="results" style="display: none;">
+                <div class="breakdown" style="background: linear-gradient(135deg, var(--header-gradient-start) 0%, var(--header-gradient-end) 100%); color: white; margin-bottom: 28px; border: none;">
+                    <h2 style="color: white; border-bottom: 2px solid rgba(255,255,255,0.2); padding-bottom: 16px; margin-bottom: 20px; font-weight: 700;" data-lang="hrTitle">Total Mensual para HR</h2>
+                    <div style="text-align: center;">
+                        <div style="font-size: 0.9em; opacity: 0.85; margin-bottom: 12px; font-weight: 500;" data-lang="hrSubtitle">La empresa debe enviar cada mes:</div>
+                        <div style="font-size: 3em; font-weight: 700; margin-bottom: 10px; letter-spacing: -0.02em;" id="totalForHR">€0</div>
+                        <div style="font-size: 0.85em; opacity: 0.75; margin-bottom: 20px;" data-lang="hrDescription">Para cubrir SS + IRPF mensual</div>
+                        <div style="background: rgba(255,255,255,0.1); padding: 18px; border-radius: 10px; font-size: 0.9em; backdrop-filter: blur(10px);">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                                <span data-lang="hrSocialSecurity" style="opacity: 0.9;">Seguridad Social:</span>
+                                <strong id="hrSS" style="font-weight: 700;">€0</strong>
+                            </div>
+                            <div style="display: flex; justify-content: space-between;">
+                                <span data-lang="hrIRPFMonthly" style="opacity: 0.9;">IRPF (mensual):</span>
+                                <strong id="hrIRPF" style="font-weight: 700;">€0</strong>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="results-grid">
+                    <div class="result-card primary">
+                        <h3 data-lang="grossIncomeTitle">Necesitas Facturar</h3>
+                        <div class="value" id="grossIncome">€0</div>
+                        <div class="subtitle" data-lang="grossIncomeSubtitle">Bruto mensual</div>
+                    </div>
+
+                    <div class="result-card">
+                        <h3 data-lang="ssPayTitle">Seguridad Social</h3>
+                        <div class="value" id="ssPay">€0</div>
+                        <div class="subtitle" data-lang="ssPaySubtitle">Pago mensual</div>
+                    </div>
+
+                    <div class="result-card">
+                        <h3 data-lang="monthlyIRPFTitle">IRPF Mensual</h3>
+                        <div class="value" id="monthlyIRPF">€0</div>
+                        <div class="subtitle" data-lang="monthlyIRPFSubtitle">Si te pagan mensual</div>
+                    </div>
+
+                    <div class="result-card">
+                        <h3 data-lang="quarterlyIRPFTitle">IRPF Trimestral</h3>
+                        <div class="value" id="quarterlyIRPF">€0</div>
+                        <div class="subtitle" data-lang="quarterlyIRPFSubtitle">Modelo 130 (cada 3 meses)</div>
+                    </div>
+                </div>
+
+                <div class="breakdown">
+                    <h2 data-lang="breakdownTitle">📊 Desglose Anual</h2>
+                    <div class="breakdown-item">
+                        <span class="label" data-lang="annualGrossLabel">Ingresos brutos anuales</span>
+                        <span class="value" id="annualGross">€0</span>
+                    </div>
+                    <div class="breakdown-item">
+                        <span class="label" data-lang="annualSSLabel">Seguridad Social (12 meses)</span>
+                        <span class="value" id="annualSS">€0</span>
+                    </div>
+                    <div class="breakdown-item">
+                        <span class="label" data-lang="annualIRPFLabel">IRPF estimado</span>
+                        <span class="value" id="annualIRPF">€0</span>
+                    </div>
+                    <div class="breakdown-item total">
+                        <span class="label" data-lang="totalTaxesLabel">Total impuestos y cotizaciones</span>
+                        <span class="value" id="totalTaxes">€0</span>
+                    </div>
+                    <div class="breakdown-item total">
+                        <span class="label" data-lang="annualNetLabel">Neto anual (en tu bolsillo)</span>
+                        <span class="value" id="annualNet">€0</span>
+                    </div>
+
+                    <div class="tax-rates">
+                        <div class="rate-box">
+                            <div class="label" data-lang="effectiveRateLabel">Tasa Efectiva</div>
+                            <div class="value" id="effectiveRate">0%</div>
+                        </div>
+                        <div class="rate-box">
+                            <div class="label" data-lang="marginalRateLabel">Tasa Marginal</div>
+                            <div class="value" id="marginalRate">0%</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="note">
+                    <strong data-lang="noteTitle">⚠️ Importante:</strong> <span data-lang="noteText1">Este cálculo no incluye gastos deducibles (teléfono, internet, oficina, etc.). Si tienes gastos profesionales, podrás deducirlos y pagar menos IRPF.</span>
+                    <div style="margin-top: 12px;">
+                        <strong data-lang="tarifaPlanaNote">💡 Tarifa Plana:</strong> <span data-lang="tarifaPlanaInfo">Solo €87/mes de SS durante 12 meses (o 24 meses si ingresos < SMI). Requisitos: ser nuevo autónomo, no haber estado de alta en últimos 2 años.</span>
+                    </div>
+                    <div style="margin-top: 12px;">
+                        <strong data-lang="cuotaCeroNote">🎉 Cuota Cero Andalucía:</strong> <span data-lang="cuotaCeroInfo">¡La Junta te reembolsa el 100% de lo que pagas! Solo para nuevos autónomos. Válido hasta septiembre 2026. Aplica a extranjeros residentes en Andalucía.</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 2025 Social Security brackets for autonomos (sistema de cotización por ingresos reales)
+        const ssBrackets2025 = [
+            { min: 0, max: 670, quota: 230 },
+            { min: 670, max: 900, quota: 260 },
+            { min: 900, max: 1166.70, quota: 275 },
+            { min: 1166.70, max: 1300, quota: 291 },
+            { min: 1300, max: 1500, quota: 294 },
+            { min: 1500, max: 1700, quota: 294 },
+            { min: 1700, max: 1850, quota: 310 },
+            { min: 1850, max: 2030, quota: 315 },
+            { min: 2030, max: 2330, quota: 320 },
+            { min: 2330, max: 2760, quota: 330 },
+            { min: 2760, max: 3190, quota: 350 },
+            { min: 3190, max: 3620, quota: 370 },
+            { min: 3620, max: 4050, quota: 390 },
+            { min: 4050, max: 6000, quota: 420 },
+            { min: 6000, max: Infinity, quota: 530 }
+        ];
+
+        // IRPF brackets 2025 (Spanish income tax)
+        const irpfBrackets2025 = [
+            { min: 0, max: 12450, rate: 0.19 },
+            { min: 12450, max: 20200, rate: 0.24 },
+            { min: 20200, max: 35200, rate: 0.30 },
+            { min: 35200, max: 60000, rate: 0.37 },
+            { min: 60000, max: 300000, rate: 0.45 },
+            { min: 300000, max: Infinity, rate: 0.47 }
+        ];
+
+        function calculateSSQuota(monthlyIncome) {
+            for (let bracket of ssBrackets2025) {
+                if (monthlyIncome >= bracket.min && monthlyIncome < bracket.max) {
+                    return bracket.quota;
+                }
+            }
+            return 530; // Maximum
+        }
+
+        function calculateIRPF(taxableIncome) {
+            let tax = 0;
+            let previousMax = 0;
+
+            for (let bracket of irpfBrackets2025) {
+                if (taxableIncome > bracket.min) {
+                    const taxableInBracket = Math.min(taxableIncome, bracket.max) - bracket.min;
+                    tax += taxableInBracket * bracket.rate;
+                } else {
+                    break;
+                }
+            }
+
+            return tax;
+        }
+
+        function getMarginalRate(income) {
+            for (let bracket of irpfBrackets2025) {
+                if (income >= bracket.min && income < bracket.max) {
+                    return bracket.rate * 100;
+                }
+            }
+            return 47; // Maximum rate
+        }
+
+        function calculateFromNet(desiredNetMonthly) {
+            // This is a reverse calculation - we need to iterate to find the right gross
+            // Starting with an estimate
+            let grossMonthly = desiredNetMonthly * 1.5; // Initial estimate
+            let tolerance = 1; // €1 tolerance
+            let maxIterations = 100;
+            let iteration = 0;
+
+            while (iteration < maxIterations) {
+                // Calculate SS quota based on current gross estimate
+                const ssMonthly = calculateSSQuota(grossMonthly);
+                
+                // Calculate annual figures
+                const grossAnnual = grossMonthly * 12;
+                const ssAnnual = ssMonthly * 12;
+                
+                // Taxable income (gross - SS)
+                const taxableIncome = grossAnnual - ssAnnual;
+                
+                // Calculate IRPF
+                const irpfAnnual = calculateIRPF(taxableIncome);
+                
+                // Calculate net
+                const netAnnual = grossAnnual - ssAnnual - irpfAnnual;
+                const calculatedNetMonthly = netAnnual / 12;
+                
+                // Check if we're close enough
+                const difference = desiredNetMonthly - calculatedNetMonthly;
+                
+                if (Math.abs(difference) < tolerance) {
+                    // We found it!
+                    return {
+                        grossMonthly: Math.round(grossMonthly),
+                        ssMonthly: ssMonthly,
+                        irpfQuarterly: Math.round(irpfAnnual / 4),
+                        grossAnnual: Math.round(grossAnnual),
+                        ssAnnual: Math.round(ssAnnual),
+                        irpfAnnual: Math.round(irpfAnnual),
+                        netAnnual: Math.round(netAnnual),
+                        effectiveRate: ((ssAnnual + irpfAnnual) / grossAnnual * 100).toFixed(1),
+                        marginalRate: getMarginalRate(taxableIncome).toFixed(0)
+                    };
+                }
+                
+                // Adjust gross for next iteration
+                grossMonthly += difference * 1.4; // Multiplier to speed up convergence
+                iteration++;
+            }
+            
+            // Fallback if we don't converge
+            return null;
+        }
+
+        function formatEuro(amount) {
+            return new Intl.NumberFormat('es-ES', {
+                style: 'currency',
+                currency: 'EUR',
+                minimumFractionDigits: 0,
+                maximumFractionDigits: 0
+            }).format(amount);
+        }
+
+        function calculateFromNetWithSS(desiredNetMonthly, ssMonthly) {
+            // Calculate what gross income is needed with a known SS monthly payment
+            let grossMonthly = desiredNetMonthly * 1.5;
+            let tolerance = 1;
+            let maxIterations = 100;
+            let iteration = 0;
+
+            while (iteration < maxIterations) {
+                const grossAnnual = grossMonthly * 12;
+                const ssAnnual = ssMonthly * 12;
+                const taxableIncome = grossAnnual - ssAnnual;
+                const irpfAnnual = calculateIRPF(taxableIncome);
+                const netAnnual = grossAnnual - ssAnnual - irpfAnnual;
+                const calculatedNetMonthly = netAnnual / 12;
+                const difference = desiredNetMonthly - calculatedNetMonthly;
+                
+                if (Math.abs(difference) < tolerance) {
+                    return {
+                        grossMonthly: Math.round(grossMonthly),
+                        ssMonthly: ssMonthly,
+                        irpfQuarterly: Math.round(irpfAnnual / 4),
+                        grossAnnual: Math.round(grossAnnual),
+                        ssAnnual: Math.round(ssAnnual),
+                        irpfAnnual: Math.round(irpfAnnual),
+                        netAnnual: Math.round(netAnnual),
+                        effectiveRate: ((ssAnnual + irpfAnnual) / grossAnnual * 100).toFixed(1),
+                        marginalRate: getMarginalRate(taxableIncome).toFixed(0)
+                    };
+                }
+                
+                grossMonthly += difference * 1.4;
+                iteration++;
+            }
+            
+            return null;
+        }
+
+        function updateCalculation() {
+            const netPay = parseFloat(document.getElementById('netPay').value);
+            const tarifaPlana = document.getElementById('tarifaPlana').checked;
+            const cuotaCero = document.getElementById('cuotaCero').checked;
+            
+            if (!netPay || netPay <= 0) {
+                document.getElementById('results').style.display = 'none';
+                return;
+            }
+
+            let results;
+            let ssMonthly;
+            let effectiveSS;
+            
+            if (tarifaPlana) {
+                ssMonthly = 87;
+                effectiveSS = cuotaCero ? 0 : 87;
+                results = calculateFromNetWithSS(netPay, effectiveSS);
+            } else {
+                results = calculateFromNet(netPay);
+                ssMonthly = results.ssMonthly;
+            }
+            
+            if (!results) {
+                alert('Error en el cálculo. Por favor, intenta con otro valor.');
+                return;
+            }
+
+            const monthlyIRPF = Math.round(results.irpfAnnual / 12);
+            const totalForHR = ssMonthly + monthlyIRPF;
+
+            // Update UI
+            document.getElementById('results').style.display = 'block';
+            document.getElementById('grossIncome').textContent = formatEuro(results.grossMonthly);
+            
+            // Show SS with note if Cuota Cero
+            if (cuotaCero) {
+                const refundableText = currentLang === 'es' ? 'Reembolsable 100%' : '100% Refundable';
+                document.getElementById('ssPay').innerHTML = formatEuro(ssMonthly) + '<div style="font-size: 0.7em; margin-top: 5px; opacity: 0.8;">' + refundableText + '</div>';
+            } else {
+                document.getElementById('ssPay').textContent = formatEuro(ssMonthly);
+            }
+            
+            document.getElementById('monthlyIRPF').textContent = formatEuro(monthlyIRPF);
+            document.getElementById('quarterlyIRPF').textContent = formatEuro(results.irpfQuarterly);
+            
+            document.getElementById('totalForHR').textContent = formatEuro(totalForHR);
+            document.getElementById('hrSS').textContent = formatEuro(ssMonthly);
+            document.getElementById('hrIRPF').textContent = formatEuro(monthlyIRPF);
+            
+            document.getElementById('annualGross').textContent = formatEuro(results.grossAnnual);
+            document.getElementById('annualSS').textContent = formatEuro(ssMonthly * 12);
+            document.getElementById('annualIRPF').textContent = formatEuro(results.irpfAnnual);
+            document.getElementById('totalTaxes').textContent = formatEuro((ssMonthly * 12) + results.irpfAnnual);
+            document.getElementById('annualNet').textContent = formatEuro(results.netAnnual);
+            
+            document.getElementById('effectiveRate').textContent = results.effectiveRate + '%';
+            document.getElementById('marginalRate').textContent = results.marginalRate + '%';
+        }
+
+        // Translations
+        const translations = {
+            es: {
+                title: "Calculadora Autónomo",
+                subtitle: "Calcula cuánto necesitas facturar según tu neto deseado",
+                inputLabel: "¿Cuánto quieres cobrar neto al mes?",
+                infoTitle: "💡 ¿Cómo funciona?",
+                infoText: "Introduces el neto que quieres cobrar mensualmente y la calculadora te muestra cuánto debe enviarte la empresa cada mes para cubrir Seguridad Social e IRPF. Así puedes negociar con HR el importe exacto.",
+                benefitsLabel: "Beneficios Disponibles:",
+                tarifaPlanaTitle: "Tarifa Plana (Nacional)",
+                tarifaPlanaDesc: "Solo €87/mes de SS durante 12 meses (o 24 si ingresos < SMI). Aplica si eres nuevo autónomo.",
+                cuotaCeroTitle: "Cuota Cero Andalucía 🎉",
+                cuotaCeroDesc: "¡La Junta te reembolsa el 100% de la SS! Pagas €87/mes y te lo devuelven. Válido hasta sept 2026.",
+                hrTitle: "Total Mensual para HR",
+                hrSubtitle: "La empresa debe enviar cada mes:",
+                hrDescription: "Para cubrir SS + IRPF mensual",
+                hrSocialSecurity: "Seguridad Social:",
+                hrIRPFMonthly: "IRPF (mensual):",
+                grossIncomeTitle: "Necesitas Facturar",
+                grossIncomeSubtitle: "Bruto mensual",
+                ssPayTitle: "Seguridad Social",
+                ssPaySubtitle: "Pago mensual",
+                monthlyIRPFTitle: "IRPF Mensual",
+                monthlyIRPFSubtitle: "Si te pagan mensual",
+                quarterlyIRPFTitle: "IRPF Trimestral",
+                quarterlyIRPFSubtitle: "Modelo 130 (cada 3 meses)",
+                breakdownTitle: "📊 Desglose Anual",
+                annualGrossLabel: "Ingresos brutos anuales",
+                annualSSLabel: "Seguridad Social (12 meses)",
+                annualIRPFLabel: "IRPF estimado",
+                totalTaxesLabel: "Total impuestos y cotizaciones",
+                annualNetLabel: "Neto anual (en tu bolsillo)",
+                effectiveRateLabel: "Tasa Efectiva",
+                marginalRateLabel: "Tasa Marginal",
+                noteTitle: "⚠️ Importante:",
+                noteText1: "Este cálculo no incluye gastos deducibles (teléfono, internet, oficina, etc.). Si tienes gastos profesionales, podrás deducirlos y pagar menos IRPF.",
+                tarifaPlanaNote: "💡 Tarifa Plana:",
+                tarifaPlanaInfo: "Solo €87/mes de SS durante 12 meses (o 24 meses si ingresos < SMI). Requisitos: ser nuevo autónomo, no haber estado de alta en últimos 2 años.",
+                cuotaCeroNote: "🎉 Cuota Cero Andalucía:",
+                cuotaCeroInfo: "¡La Junta te reembolsa el 100% de lo que pagas! Solo para nuevos autónomos. Válido hasta septiembre 2026. Aplica a extranjeros residentes en Andalucía."
+            },
+            en: {
+                title: "Self-Employed Calculator",
+                subtitle: "Calculate how much you need to invoice based on your desired net pay",
+                inputLabel: "How much do you want to take home per month?",
+                infoTitle: "💡 How does it work?",
+                infoText: "Enter your desired monthly net pay and the calculator shows how much the company needs to send you each month to cover Social Security and income tax. Perfect for negotiating with HR!",
+                benefitsLabel: "Available Benefits:",
+                tarifaPlanaTitle: "Flat Rate (National)",
+                tarifaPlanaDesc: "Only €87/month SS for 12 months (or 24 if income < minimum wage). Applies if you're a new self-employed worker.",
+                cuotaCeroTitle: "Zero Quota Andalucía 🎉",
+                cuotaCeroDesc: "The regional government refunds 100% of your SS! You pay €87/month and get it all back. Valid until Sept 2026.",
+                hrTitle: "Monthly Total for HR",
+                hrSubtitle: "The company must send each month:",
+                hrDescription: "To cover SS + monthly income tax",
+                hrSocialSecurity: "Social Security:",
+                hrIRPFMonthly: "Income Tax (monthly):",
+                grossIncomeTitle: "You Need to Invoice",
+                grossIncomeSubtitle: "Monthly gross",
+                ssPayTitle: "Social Security",
+                ssPaySubtitle: "Monthly payment",
+                monthlyIRPFTitle: "Monthly Income Tax",
+                monthlyIRPFSubtitle: "If paid monthly",
+                quarterlyIRPFTitle: "Quarterly Income Tax",
+                quarterlyIRPFSubtitle: "Form 130 (every 3 months)",
+                breakdownTitle: "📊 Annual Breakdown",
+                annualGrossLabel: "Annual gross income",
+                annualSSLabel: "Social Security (12 months)",
+                annualIRPFLabel: "Estimated income tax",
+                totalTaxesLabel: "Total taxes and contributions",
+                annualNetLabel: "Annual net (in your pocket)",
+                effectiveRateLabel: "Effective Rate",
+                marginalRateLabel: "Marginal Rate",
+                noteTitle: "⚠️ Important:",
+                noteText1: "This calculation doesn't include deductible expenses (phone, internet, office, etc.). If you have business expenses, you can deduct them and pay less income tax.",
+                tarifaPlanaNote: "💡 Flat Rate:",
+                tarifaPlanaInfo: "Only €87/month SS for 12 months (or 24 months if income < minimum wage). Requirements: new self-employed, not registered in last 2 years.",
+                cuotaCeroNote: "🎉 Zero Quota Andalucía:",
+                cuotaCeroInfo: "The regional government refunds 100% of what you pay! For new self-employed only. Valid until September 2026. Applies to foreigners residing in Andalucía."
+            }
+        };
+
+        let currentLang = 'es';
+        let currentTheme = localStorage.getItem('theme') || 'light';
+
+        // Apply saved theme on load
+        document.documentElement.setAttribute('data-theme', currentTheme);
+        if (currentTheme === 'dark') {
+            document.getElementById('themeToggle').textContent = '☾';
+        }
+
+        function switchLanguage() {
+            currentLang = currentLang === 'es' ? 'en' : 'es';
+            
+            // Update button text
+            const langToggle = document.getElementById('langToggle');
+            langToggle.textContent = currentLang === 'es' ? 'EN' : 'ES';
+            
+            // Update all elements with data-lang attribute
+            document.querySelectorAll('[data-lang]').forEach(element => {
+                const key = element.getAttribute('data-lang');
+                if (translations[currentLang][key]) {
+                    element.textContent = translations[currentLang][key];
+                }
+            });
+
+            // Re-update SS display if Cuota Cero is checked
+            const cuotaCero = document.getElementById('cuotaCero').checked;
+            if (cuotaCero && document.getElementById('results').style.display !== 'none') {
+                updateCalculation();
+            }
+        }
+
+        function switchTheme() {
+            currentTheme = currentTheme === 'light' ? 'dark' : 'light';
+            document.documentElement.setAttribute('data-theme', currentTheme);
+            localStorage.setItem('theme', currentTheme);
+            
+            // Keep moon icon for both states
+            document.getElementById('themeToggle').textContent = '☾';
+        }
+
+        // Add event listeners
+        document.getElementById('netPay').addEventListener('input', updateCalculation);
+        document.getElementById('tarifaPlana').addEventListener('change', updateCalculation);
+        document.getElementById('cuotaCero').addEventListener('change', updateCalculation);
+        document.getElementById('langToggle').addEventListener('click', switchLanguage);
+        document.getElementById('themeToggle').addEventListener('click', switchTheme);
+
+        // Set default value and calculate
+        document.getElementById('netPay').value = 2000;
+        updateCalculation();
+    </script>
+</body>
+</html>
